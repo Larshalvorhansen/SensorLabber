@@ -22,14 +22,16 @@ import sys
 import cv2
 import numpy as np
 
-#CLI options
+#CLI options@
+"""
 if len(sys.argv) < 3:
     print("Select smaller ROI of a video file, and save the mean of each image channel to file, one column per color channel (R, G, B), each row corresponding to a video frame number.")
     print("")
     print("Usage:\npython " + sys.argv[0] + " [path to input video file] [path to output data file]")
     exit()
-filename = sys.argv[1]
-output_filename = sys.argv[2]
+    """
+filename = 'test.mp4'
+output_filename = 'test_vs'
 
 #read video file
 cap = cv2.VideoCapture(filename, cv2.CAP_FFMPEG)
