@@ -66,7 +66,7 @@ print(penetration_depth, "Penetration Depth")
 
 print ("Oppgave 1b) i meter ")
 # For demonstration, let's calculate the transmission at a depth of 1 mm for red, green, and blue wavelengths
-depth = 1e-3  # Depth in meters
+depth = 1e-3 #1cm  # Depth in meters
 transmission_red = calculate_transmission(depth, mua[0], musr[0])
 transmission_green = calculate_transmission(depth, mua[1], musr[1])
 transmission_blue = calculate_transmission(depth, mua[2], musr[2])
