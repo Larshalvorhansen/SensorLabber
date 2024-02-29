@@ -1,8 +1,8 @@
 import numpy as np
 
 
-muabo = np.genfromtxt("./muabo.txt", delimiter=",")
-muabd = np.genfromtxt("./muabd.txt", delimiter=",")
+muabo = np.genfromtxt("./optikkLab/muabo.txt", delimiter=",")
+muabd = np.genfromtxt("./optikkLab/muabd.txt", delimiter=",")
 
 red_wavelength = 600 # Replace with wavelength in nanometres
 green_wavelength = 515 # Replace with wavelength in nanometres
