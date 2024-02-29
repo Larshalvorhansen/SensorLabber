@@ -73,4 +73,6 @@ transmission_blue = calculate_transmission(depth, mua[2], musr[2])
 
 print(transmission_red, transmission_green, transmission_blue)
 
+print ("Oppgave 1e)")
+print ("Grønn farge. Fordi dens bølgelengde ikke har for lang eller for kort absorbsjons lengde.")
 
