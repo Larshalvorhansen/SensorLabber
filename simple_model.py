@@ -40,6 +40,37 @@ print(mua, "Mua")
 def calculate_penetration_depth(mua, musr):
     return 1 / np.sqrt(3 * (musr + mua) * mua)
 
+
+# Function to calculate the constant C based on mu_a and mu_s'
+def calculate_C(mua, musr):
+    return np.sqrt(3 * mua * (musr + mua))
+
+# Function to calculate fluence rate at the surface phi(0) based on penetration depth delta and mu_a
+def calculate_phi_0(mua, penetration_depth):
+    return 1 / (2 * penetration_depth * mua)
+
+# Function to calculate transmission T based on depth d, mu_a, and mu_s'
+def calculate_transmission(d, mua, musr):
+    C = calculate_C(mua, musr)
+    phi_0 = calculate_phi_0(mua, calculate_penetration_depth(mua, musr))
+    phi_d = phi_0 * np.exp(-C * d)
+    T = phi_d / phi_0
+    return T
+
+
+print ("Oppgave 1a) ")
 # Call the function with the calculated mua and musr values
 penetration_depth = calculate_penetration_depth(mua, musr)
 print(penetration_depth, "Penetration Depth")
+
+
+print ("Oppgave 1b) i meter ")
+# For demonstration, let's calculate the transmission at a depth of 1 mm for red, green, and blue wavelengths
+depth = 1e-3  # Depth in meters
+transmission_red = calculate_transmission(depth, mua[0], musr[0])
+transmission_green = calculate_transmission(depth, mua[1], musr[1])
+transmission_blue = calculate_transmission(depth, mua[2], musr[2])
+
+print(transmission_red, transmission_green, transmission_blue)
+
+
