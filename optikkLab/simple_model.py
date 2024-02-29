@@ -1,8 +1,8 @@
 import numpy as np
 
 
-muabo = np.genfromtxt("./optikkLab/muabo.txt", delimiter=",")
-muabd = np.genfromtxt("./optikkLab/muabd.txt", delimiter=",")
+muabo = np.genfromtxt("./muabo.txt", delimiter=",")
+muabd = np.genfromtxt("./muabd.txt", delimiter=",")
 
 red_wavelength = 600 # Replace with wavelength in nanometres
 green_wavelength = 515 # Replace with wavelength in nanometres
@@ -13,7 +13,7 @@ wavelength = np.array([red_wavelength, green_wavelength, blue_wavelength])
 def mua_blood_oxy(x): return np.interp(x, muabo[:, 0], muabo[:, 1])
 def mua_blood_deoxy(x): return np.interp(x, muabd[:, 0], muabd[:, 1])
 
-bvf = 0.01 # Blood volume fraction, average blood amount in tissue
+bvf = 1 # Blood volume fraction, average blood amount in tissue
 oxy = 0.8 # Blood oxygenation
 
 # Absorption coefficient ($\mu_a$ in lab text)
@@ -22,6 +22,10 @@ mua_other = 25 # Background absorption due to collagen, et cetera
 mua_blood = (mua_blood_oxy(wavelength)*oxy # Absorption due to
             + mua_blood_deoxy(wavelength)*(1-oxy)) # pure blood
 mua = mua_blood*bvf + mua_other
+
+def mua_bvf(bvf_funk):
+    mua = mua_blood*bvf_funk + mua_other
+    return mua
 
 # reduced scattering coefficient ($\mu_s^\prime$ in lab text)
 # the numerical constants are thanks to N. Bashkatov, E. A. Genina and
@@ -58,6 +62,13 @@ def calculate_transmission(d, mua, musr):
     return T
 
 
+
+def kontrast (d,bvf_h,bvf_l ):
+    K = np.abs(calculate_transmission(d,mua_bvf(bvf_h),musr)-calculate_transmission(d,mua_bvf(bvf_l),musr))/calculate_transmission(d,mua_bvf(bvf_l),musr)
+    return K
+
+
+
 print ("Oppgave 1a) ")
 # Call the function with the calculated mua and musr values
 penetration_depth = calculate_penetration_depth(mua, musr)
@@ -66,13 +77,13 @@ print(penetration_depth, "Penetration Depth")
 
 print ("Oppgave 1b) i meter ")
 # For demonstration, let's calculate the transmission at a depth of 1 mm for red, green, and blue wavelengths
-depth = 1e-3 #1cm  # Depth in meters
+depth = 300e-6 # Depth in meters
 transmission_red = calculate_transmission(depth, mua[0], musr[0])
 transmission_green = calculate_transmission(depth, mua[1], musr[1])
 transmission_blue = calculate_transmission(depth, mua[2], musr[2])
 
 print(transmission_red, transmission_green, transmission_blue)
 
-print ("Oppgave 1e)")
-print ("Grønn farge. Fordi dens bølgelengde ikke har for lang eller for kort absorbsjons lengde.")
 
+print ("Oppgave 1d) ")
+print ("Kontrast", kontrast(300*10**(-6),1,0.01))
