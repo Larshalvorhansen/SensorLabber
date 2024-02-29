@@ -87,3 +87,8 @@ print(transmission_red, transmission_green, transmission_blue)
 
 print ("Oppgave 1d) ")
 print ("Kontrast", kontrast(300*10**(-6),1,0.01))
+
+
+print ("Oppgave 1e)")
+print ("Grønn farge. Fordi dens bølgelengde ikke har for lang eller for kort absorbsjons lengde.")
+
