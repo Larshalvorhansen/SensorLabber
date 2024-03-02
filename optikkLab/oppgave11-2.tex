@@ -1,0 +1,13 @@
+Du har trukket ut et pulssignal fra en kameravideo. Du kjenner amplituden på pulssignalet og
+sannsynlighetsfordelingen til støyen.
+
+\begin{itemize}
+  \item Hvordan kan du deﬁnere SNR dersom du er interessert i å se på hvor klart pulssignal du har?
+  \subitem{Bruke definisjonen for SNR: $SNR_{db} = 10 log_{10}(\frac{A_{signal}}{A_{noise}})^2 = A_{signal, db} - A_{noise, db}$}
+  \subitem{Signalet anntar vi at har en frekvens som er mye lavere enn støyen. ($25_{til} 150BPM \approx 0.5_{til}2.5Hz$)}
+  
+  \item Hvordan kan du gjøre dette med en FFT-basert tilnærming om du ikke har en god karakteristikk av støyen eller pulsamplituden?
+  \subitem{Vi kan vite fra før av at pulsen er i intervallet $25_{til} 150BPM \approx 0.5_{til}2.5Hz$}. Med dette kan vi ekstrahere informasjonen som er under $2.5Hz$ og bruke det til å beregne signal amplitude. Så kan vi bruke resten av signalet til å beregne støy amplitude. 
+
+For en enda bedre "detekrering" av puls signal i FFTen kan vi bruke en ekstern pulsmåler for så å ekstrahere ut den spesifike frekvensen som passer med den målte pulsen. (med en $0.5 HZ$ margin) Da vil vi væøre ganske sikker på at det signalet vi ser pådet faktiske 
+\end{itemize}
