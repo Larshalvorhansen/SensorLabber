@@ -13,6 +13,20 @@ plt.rcParams['lines.linewidth'] = 2.5
 
 
 def raspi_import(path, channels=3):
+
+    fid = open(path, 'r')
+    data = []
+    for line in fid:
+        values = line.split(" ")
+        temp = []
+        for num in values:
+            temp.append(float(num))
+        data.append(temp)
+    print(data)
+    data = np.array(data)
+    return 30, data
+
+def raspi_import_1(path, channels=3):
     """
     Import data produced using adc_sampler.c.
 
@@ -26,16 +40,17 @@ def raspi_import(path, channels=3):
         # The "dangling" `.astype('float64')` casts data to double precision
         # Stops noisy autocorrelation due to overflow
         data = data.reshape((-1, channels))
+        print(data)
 
-    return sample_period, data * 0.000807
+    return sample_period, data 
 
 
 def plot_data(data,filename='plot'):
     # Number of channels
-    num_channels = data.shape[1]
+    num_channels = 3
     
     # Time array (assuming equal spacing)
-    sample_period = 32e-6  # example value, replace with your actual sample period
+    sample_period = 1/30  # example value, replace with your actual sample period
     time = np.arange(data.shape[0]) * sample_period
 
     # Plot each channel in a separate subplot
@@ -54,12 +69,12 @@ def plot_data(data,filename='plot'):
     # Plot all channels in one plot for comparison
     plt.figure(figsize=(22, 8))
     for i in range(num_channels):
-        plt.plot(time, data[:, i]+i, label=f'Channel {i+1}')
+        plt.plot(time, data[:, i], label=f'Channel {i+1}')
 
     plt.xlabel('Time (s)',fontsize=22)
     plt.ylabel('Amplitude [mV]',fontsize=22)
     #plt.title('All Channels',fontsize=16)
-    plt.xlim(0.05, 0.1)
+    plt.xlim(0, 30)
     plt.grid()
     plt.legend(loc='best', fontsize='xx-large', frameon=True, shadow=True, borderpad=1)
     plt.savefig(f'{filename}_all_channels.png', dpi=300, bbox_inches='tight')
@@ -152,7 +167,8 @@ def plot_fft_with_zero_padding(data, sample_rate, frec_spek, signal_freq_range, 
 
         # Zero-padding: Length to the next power of 2 for better FFT performance and resolution
         N = len(windowed_data)
-        N_padded = 2**np.ceil(np.log2(N)).astype(int)
+        N_padded=N
+        #N_padded = 2**np.ceil(np.log2(N)).astype(int)
 
         # Perform FFT with zero-padding
         fft_result = fft(windowed_data, n=N_padded)
@@ -183,32 +199,35 @@ def plot_fft_with_zero_padding(data, sample_rate, frec_spek, signal_freq_range, 
     plt.xlabel('Frequency (Hz)', fontsize=22)
     plt.ylabel('Magnitude (dB)', fontsize=22)
     plt.xlim(0, frec_spek)
-    plt.ylim(np.min(20*np.log10(positive_magnitude))-80,5)  # Adjust the y-axis limits appropriately
+    plt.ylim(np.min(20*np.log10(positive_magnitude))-100,5)  # Adjust the y-axis limits appropriately
     plt.grid(True)
     plt.legend(loc='best', fontsize='xx-large', frameon=True, shadow=True, borderpad=1)
     plt.show()
 
 
 
-frec_spek = 6900
+frec_spek = 10
 signal_freq_range = (3740, 3750)
 noise_freq_range = (3700, 3740) 
 
 
-#plot_data(data)
-sample_rate, data = raspi_import('data_num/test_frekvens')
-plot_fft_with_zero_padding(data, 31250, frec_spek,signal_freq_range,noise_freq_range)
 
-sample_rate, data = raspi_import('data_num/palina_r2')
-plot_fft_with_zero_padding(data, 31250, frec_spek,signal_freq_range,noise_freq_range)
-"""
-sample_rate, data = raspi_import('data_num/palina1')
-plot_fft_with_zero_padding(data, 31250, frec_spek,signal_freq_range,noise_freq_range)
+#sample_rate, data = raspi_import('data_num/test_frekvens')
+#plot_fft_with_zero_padding(data, 31250, frec_spek,signal_freq_range,noise_freq_range)
 
-sample_rate, data = raspi_import('data_num/palina2')
-plot_fft_with_zero_padding(data, 31250, frec_spek,signal_freq_range,noise_freq_range)
+sample_rate, data = raspi_import('data_num/ok1')
+plot_data(data)
+plot_fft_with_zero_padding(data, 30, frec_spek,signal_freq_range,noise_freq_range)
 
-sample_rate, data = raspi_import('data_num/robust4')
-plot_fft_with_zero_padding(data, 31250, frec_spek,signal_freq_range,noise_freq_range)
+sample_rate, data = raspi_import('data_num/ok2')
+plot_fft_with_zero_padding(data, 30, frec_spek,signal_freq_range,noise_freq_range)
 
-"""
+sample_rate, data = raspi_import('data_num/ok4')
+plot_fft_with_zero_padding(data, 30, frec_spek,signal_freq_range,noise_freq_range)
+
+sample_rate, data = raspi_import('data_num/ok5')
+plot_fft_with_zero_padding(data, 30, frec_spek,signal_freq_range,noise_freq_range)
+
+
+sample_rate, data = raspi_import('data_num/ok4')
+plot_fft_with_zero_padding(data, 30, frec_spek,signal_freq_range,noise_freq_range)
