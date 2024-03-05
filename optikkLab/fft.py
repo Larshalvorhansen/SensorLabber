@@ -196,6 +196,33 @@ def plot_fft_with_zero_padding(data, sample_rate, frec_spek, signal_freq_range, 
         # Plotting each frequency component in the same figure
         #plt.plot(positive_freq, 20*np.log10(positive_magnitude), label=f'Channel {j+1} - SNR: {SNR:.2f} dB')  # Plot in dB
         plt.plot(positive_freq, 20*np.log10(positive_magnitude) - np.max(20*np.log10(positive_magnitude)), label=f'Channel {j+1}')  # Convert magnitude to dB
+   
+   # Assuming 'positive_freq' and 'positive_magnitude' are your frequency and magnitude arrays
+
+    # Define your frequency range
+        start_freq = 0.5
+        end_freq = 5
+
+        # Step 1: Identify the indices within the specified frequency range
+        freq_range_mask = (positive_freq >= start_freq) & (positive_freq <= end_freq)
+
+        # Apply the mask to get frequencies and magnitudes within the range
+        freq_in_range = positive_freq[freq_range_mask]
+        magnitude_in_range = positive_magnitude[freq_range_mask]
+
+        # Step 2: Find the index of the maximum value in the magnitude within the range
+        max_index = np.argmax(magnitude_in_range)
+
+        # Step 3: Extract the frequency and magnitude of the peak
+        peak_frequency = freq_in_range[max_index]
+        peak_magnitude = magnitude_in_range[max_index]
+
+        print(f"Peak frequency: {peak_frequency} Hz, Peak magnitude: {peak_magnitude} dB")
+
+
+
+   
+   
     print(np.min(20*np.log10(positive_magnitude))-5)
     plt.xlabel('Frequency (Hz)', fontsize=22)
     plt.ylabel('Magnitude (dB)', fontsize=22)
@@ -273,37 +300,8 @@ plot_fft_with_zero_padding(data, 30, frec_spek,signal_freq_range,noise_freq_rang
 sample_rate, data = raspi_import('data_num/test_frekvens')
 plot_fft_with_zero_padding(data, 30, frec_spek,signal_freq_range,noise_freq_range, "skjermen med frekvens")
 
-x_1 =data[:, 0]  
-x_2 =data[:, 1]  
-x_3 =data[:, 2]  
-
-r_21 = np.abs(np.correlate(x_2, x_1, "full"))
-r_31 = np.abs(np.correlate(x_3, x_1, "full"))
-r_32 = np.abs(np.correlate(x_3, x_2, "full"))
 
 
-print("r_21: ", r_21)
-print("r_31: ", r_31)
-print("r_32: ", r_32)
-
-plt.plot(r_21)
-plt.plot(r_31)
-plt.plot(r_32)
-plt.show()
-
-
-x_1_idx_maxval = np.argmax(r_21)
-x_2_idx_maxval = np.argmax(r_31)
-x_3_idx_maxval = np.argmax(r_32)
-
-autocorr = np.argmax(np.correlate(x_3, x_3, "full"))
-print("Autocorr:\t", autocorr)
-
-n_21 = x_1_idx_maxval - autocorr
-n_31 = x_2_idx_maxval - autocorr
-n_32 = x_3_idx_maxval - autocorr
-
-print("Delays:\t", n_21, n_31, n_32)
 
 #tau21, tau31, tau32= finn_tidsforsinkelser(signal1, signal2, signal3, 1/30)
 #print(tau21, tau31, tau32)
