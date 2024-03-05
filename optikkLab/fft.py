@@ -119,7 +119,7 @@ def plot_fft_with_zero_padding(data, sample_rate, frec_spek, signal_freq_range, 
     print(np.min(20*np.log10(positive_magnitude))-5)
     plt.xlabel('Frequency (Hz)', fontsize=22)
     plt.ylabel('Magnitude (dB)', fontsize=22)
-    plt.xlim(2500, frec_spek)
+    plt.xlim(3000, frec_spek)
     plt.ylim(np.min(20*np.log10(positive_magnitude))-65,5)  # Adjust the y-axis limits appropriately
     plt.grid(True)
     plt.legend(loc='best', fontsize='xx-large', frameon=True, shadow=True, borderpad=1)
@@ -129,7 +129,7 @@ def plot_fft_with_zero_padding(data, sample_rate, frec_spek, signal_freq_range, 
 
 
 
-frec_spek = 5000
+frec_spek = 4000
 signal_freq_range = (980, 1010)
 noise_freq_range = (1100, 1200) 
 
@@ -144,5 +144,8 @@ plot_fft_with_zero_padding(data, 31250, frec_spek,signal_freq_range,noise_freq_r
 sample_rate, data = raspi_import('data_num/ok4')
 plot_fft_with_zero_padding(data, 31250, frec_spek,signal_freq_range,noise_freq_range)
 
-sample_rate, data = raspi_import('data_num/ok9')
+sample_rate, data = raspi_import('data_num/ok5')
+plot_fft_with_zero_padding(data, 31250, frec_spek,signal_freq_range,noise_freq_range)
+
+sample_rate, data = raspi_import('data_num/ok6')
 plot_fft_with_zero_padding(data, 31250, frec_spek,signal_freq_range,noise_freq_range)
