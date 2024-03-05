@@ -2,6 +2,7 @@ import sys
 import numpy as np #Plotting
 import matplotlib.pyplot as plt #Lese CSV
 import csv
+from scipy.signal import correlate
 from scipy.fft import fft, ifft,fftfreq
 # Plotting 
 plt.rc('xtick', labelsize=19) # endre størrelsen på x-tall
@@ -22,7 +23,7 @@ def raspi_import(path, channels=3):
         for num in values:
             temp.append(float(num))
         data.append(temp)
-    print(data)
+    #print(data)
     data = np.array(data)
     return 30, data
 
@@ -53,7 +54,7 @@ def plot_data(data,filename='plot'):
     sample_period = 1/30  # example value, replace with your actual sample period
     time = np.arange(data.shape[0]) * sample_period
 
-    # Plot each channel in a separate subplot
+    """# Plot each channel in a separate subplot
     fig, axs = plt.subplots(num_channels, 1, figsize=(8, 10))
     for i in range(num_channels):
         d=data[:, i]
@@ -65,7 +66,7 @@ def plot_data(data,filename='plot'):
         axs[i].set_xlim(0.2, 0.4)
     plt.tight_layout()
     fig.savefig(f'{filename}_channels.png', dpi=300, bbox_inches='tight')
-
+"""
     # Plot all channels in one plot for comparison
     plt.figure(figsize=(22, 8))
     for i in range(num_channels):
@@ -143,7 +144,7 @@ def plot_fft_with_zero_padding(data, sample_rate, frec_spek, signal_freq_range, 
 """
 
 
-def plot_fft_with_zero_padding(data, sample_rate, frec_spek, signal_freq_range, noise_freq_range):
+def plot_fft_with_zero_padding(data, sample_rate, frec_spek, signal_freq_range, noise_freq_range,Title="Bilde1"):
     """
     Plot the FFT of multiple signals with zero-padding and Hann window applied and calculate SNR.
 
@@ -167,8 +168,8 @@ def plot_fft_with_zero_padding(data, sample_rate, frec_spek, signal_freq_range, 
 
         # Zero-padding: Length to the next power of 2 for better FFT performance and resolution
         N = len(windowed_data)
-        N_padded=N
-        #N_padded = 2**np.ceil(np.log2(N)).astype(int)
+        #N_padded=N
+        N_padded = 2**np.ceil(np.log2(N)).astype(int)
 
         # Perform FFT with zero-padding
         fft_result = fft(windowed_data, n=N_padded)
@@ -201,33 +202,108 @@ def plot_fft_with_zero_padding(data, sample_rate, frec_spek, signal_freq_range, 
     plt.xlim(0, frec_spek)
     plt.ylim(np.min(20*np.log10(positive_magnitude))-100,5)  # Adjust the y-axis limits appropriately
     plt.grid(True)
+    plt.title(Title)
     plt.legend(loc='best', fontsize='xx-large', frameon=True, shadow=True, borderpad=1)
     plt.show()
 
 
 
-frec_spek = 10
-signal_freq_range = (3740, 3750)
-noise_freq_range = (3700, 3740) 
+
+
+
+
+
+
+
+
+
+frec_spek = 5
+signal_freq_range = (0.9, 1.2)
+noise_freq_range = (1.2, 8) 
 
 
 
 #sample_rate, data = raspi_import('data_num/test_frekvens')
 #plot_fft_with_zero_padding(data, 31250, frec_spek,signal_freq_range,noise_freq_range)
 
+
+print("Normal puls")
+
 sample_rate, data = raspi_import('data_num/ok1')
 plot_data(data)
-plot_fft_with_zero_padding(data, 30, frec_spek,signal_freq_range,noise_freq_range)
+plot_fft_with_zero_padding(data, 30, frec_spek,signal_freq_range,noise_freq_range,"Ok1")
 
 sample_rate, data = raspi_import('data_num/ok2')
-plot_fft_with_zero_padding(data, 30, frec_spek,signal_freq_range,noise_freq_range)
+plot_fft_with_zero_padding(data, 30, frec_spek,signal_freq_range,noise_freq_range,"Ok2")
 
 sample_rate, data = raspi_import('data_num/ok4')
-plot_fft_with_zero_padding(data, 30, frec_spek,signal_freq_range,noise_freq_range)
+plot_fft_with_zero_padding(data, 30, frec_spek,signal_freq_range,noise_freq_range,"Ok4")
 
 sample_rate, data = raspi_import('data_num/ok5')
-plot_fft_with_zero_padding(data, 30, frec_spek,signal_freq_range,noise_freq_range)
+plot_fft_with_zero_padding(data, 30, frec_spek,signal_freq_range,noise_freq_range, "Ok5")
+
+sample_rate, data = raspi_import('data_num/ok6')
+plot_fft_with_zero_padding(data, 30, frec_spek,signal_freq_range,noise_freq_range,"Ok6")
 
 
-sample_rate, data = raspi_import('data_num/ok4')
-plot_fft_with_zero_padding(data, 30, frec_spek,signal_freq_range,noise_freq_range)
+print("Lånt data")
+
+sample_rate, data = raspi_import('data_num/test_lab')
+plot_fft_with_zero_padding(data, 30, frec_spek,signal_freq_range,noise_freq_range, "Lånt")
+
+
+sample_rate, data = raspi_import('data_num/palina1')
+plot_fft_with_zero_padding(data, 30, frec_spek,signal_freq_range,noise_freq_range, "reflektans1")
+
+sample_rate, data = raspi_import('data_num/palina2')
+plot_fft_with_zero_padding(data, 30, frec_spek,signal_freq_range,noise_freq_range,"reflektans2")
+
+
+print("robust test")
+signal_freq_range = (1.8, 2.2)
+noise_freq_range = (1.2, 1.8) 
+sample_rate, data = raspi_import('data_num/palina_r1')
+plot_fft_with_zero_padding(data, 30, frec_spek,signal_freq_range,noise_freq_range, "robust test 1")
+
+sample_rate, data = raspi_import('data_num/palina_r2')
+plot_fft_with_zero_padding(data, 30, frec_spek,signal_freq_range,noise_freq_range, "robust test 2")
+
+
+
+sample_rate, data = raspi_import('data_num/test_frekvens')
+plot_fft_with_zero_padding(data, 30, frec_spek,signal_freq_range,noise_freq_range, "skjermen med frekvens")
+
+x_1 =data[:, 0]  
+x_2 =data[:, 1]  
+x_3 =data[:, 2]  
+
+r_21 = np.abs(np.correlate(x_2, x_1, "full"))
+r_31 = np.abs(np.correlate(x_3, x_1, "full"))
+r_32 = np.abs(np.correlate(x_3, x_2, "full"))
+
+
+print("r_21: ", r_21)
+print("r_31: ", r_31)
+print("r_32: ", r_32)
+
+plt.plot(r_21)
+plt.plot(r_31)
+plt.plot(r_32)
+plt.show()
+
+
+x_1_idx_maxval = np.argmax(r_21)
+x_2_idx_maxval = np.argmax(r_31)
+x_3_idx_maxval = np.argmax(r_32)
+
+autocorr = np.argmax(np.correlate(x_3, x_3, "full"))
+print("Autocorr:\t", autocorr)
+
+n_21 = x_1_idx_maxval - autocorr
+n_31 = x_2_idx_maxval - autocorr
+n_32 = x_3_idx_maxval - autocorr
+
+print("Delays:\t", n_21, n_31, n_32)
+
+#tau21, tau31, tau32= finn_tidsforsinkelser(signal1, signal2, signal3, 1/30)
+#print(tau21, tau31, tau32)
