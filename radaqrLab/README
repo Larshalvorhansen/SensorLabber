@@ -1,0 +1,7 @@
+Her kommer det et litte oversikt over hva som ligger her og hvordan bruker man mappen:
+
+1. Lag en ny mappe for rådata (data_r) og pass på å ha ny navn hver gang men gjør forsøk
+2. Lag en ny mappe for prosisert data hvis det finnes (data_num)
+3. Filler med python kode burde være så små som mulig, for å holde det ryddig, hvis det er mulig å delle i to filler, gjør det. 
+
+
