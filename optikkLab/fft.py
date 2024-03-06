@@ -78,70 +78,10 @@ def plot_data(data,filename='plot'):
     plt.xlim(0, 30)
     plt.grid()
     plt.legend(loc='best', fontsize='xx-large', frameon=True, shadow=True, borderpad=1)
-    plt.savefig(f'{filename}_all_channels.png', dpi=300, bbox_inches='tight')
+    #plt.savefig(f'{filename}_all_channels.png', dpi=300, bbox_inches='tight')
 
 
-"""
-def plot_fft_with_zero_padding(data, sample_rate, frec_spek, signal_freq_range, noise_freq_range):
-    
-    Plot the FFT of multiple signals with zero-padding and Hann window applied and calculate SNR.
 
-    Parameters:
-    data (numpy.ndarray): The input signals, expected shape (samples, channels).
-    sample_rate (float): The sampling rate of the signals.
-    frec_spek (float): The maximum frequency to be plotted.
-    signal_freq_range (tuple): The frequency range considered as signal (start_freq, end_freq).
-    noise_freq_range (tuple): The frequency range considered as noise (start_freq, end_freq).
-    
-
-    plt.figure(figsize=(22, 8))
-
-    for j in range(data.shape[1]):  # Iterate over channels
-        d = data[:, j]
-        d = d - np.mean(d)
-
-        # Apply Hann window to the signal
-        windowed_data = d * np.hanning(len(d))
-
-        # Zero-padding: Length to the next power of 2 for better FFT performance and resolution
-        N = len(windowed_data)
-        N_padded = 2**np.ceil(np.log2(N)).astype(int)
-
-        # Perform FFT with zero-padding
-        fft_result = fft(windowed_data, n=N_padded)
-        fft_magnitude = np.abs(fft_result)
-
-        # Frequency bins
-        freq = fftfreq(N_padded, 1/sample_rate)
-
-        # Only take the positive half of the spectrum
-        positive_freq = freq[:N_padded//2]
-        positive_magnitude = fft_magnitude[:N_padded//2]
-
-        # Calculate power in the signal and noise frequency ranges
-        signal_mask = (positive_freq >= signal_freq_range[0]) & (positive_freq <= signal_freq_range[1])
-        noise_mask = (positive_freq >= noise_freq_range[0]) & (positive_freq <= noise_freq_range[1])
-
-        signal_power = np.sum(positive_magnitude[signal_mask]**2)
-        noise_power = np.sum(positive_magnitude[noise_mask]**2)
-
-        # Calculate SNR
-        SNR = 10 * np.log10(signal_power / noise_power)
-        print(f'Channel {j+1} SNR: {SNR:.2f} dB')
-
-        # Plotting each frequency component in the same figure
-        #plt.plot(positive_freq, 20*np.log10(positive_magnitude), label=f'Channel {j+1} - SNR: {SNR:.2f} dB')  # Plot in dB
-        plt.plot(positive_freq, 20*np.log10(positive_magnitude) - np.max(20*np.log10(positive_magnitude)), label=f'Channel {j+1}')  # Convert magnitude to dB
-    print(np.min(20*np.log10(positive_magnitude))-5)
-    plt.xlabel('Frequency (Hz)', fontsize=22)
-    plt.ylabel('Magnitude (dB)', fontsize=22)
-    plt.xlim(3500, frec_spek)
-    plt.ylim(np.min(20*np.log10(positive_magnitude))-65,5)  # Adjust the y-axis limits appropriately
-    plt.grid(True)
-    plt.legend(loc='best', fontsize='xx-large', frameon=True, shadow=True, borderpad=1)
-    plt.show()
-
-"""
 
 
 def plot_fft_with_zero_padding(data, sample_rate, frec_spek, signal_freq_range, noise_freq_range,Title="Bilde1"):
