@@ -18,4 +18,4 @@ for radaren.
    * For å finne det effektive radartverrsnittet bruker vi at $\sigma = \frac{4\pi a^4}{3\lambda^2} = 52.1$
 
 4. Hvor mye må reﬂektoren beveges radielt for at I-Q-phasoren skal foreta et 360-graders fase-omløp?
-   
+    * Man skulle tro det var en bølgelengde man måtte bevege seg en hel bølgelengde. Men radarsignalet blir jo reflektert tilbake. Dermed er det en halv bølgelengde altså $\lambda/2 = 0.0125m/2 = 0.00625m = 6.25mm$
