@@ -8,9 +8,11 @@
 for radaren.
     * Vi bruker formelen $G[dBi] \approx 10 log_{10}(\frac{3*10^4}{\theta_e \theta_a})$
     * Vi må bruke $\theta \approx arctan(\frac{\lambda}{D})$ for hhv høyde og bredde på radaren for å beregne hhv $\theta_e$ og $\theta_a$
-    * $\theta \approx arctan(\frac{\lambda}{D})$
-    * $\lambda = c/f = \frac{3*10^8}{24 * 10`}$
+    * $\theta \approx arctan(\frac{\lambda}{D})$ (1.0)
+    * $\lambda = c/f \approx \frac{3*10^8}{24 * 10^9} = 0.0125 m$
+    * Using the $\theta$ equation with both the heigth $D_e = 65.4 mm$ and width $D_a = 25mm$ of the radar respectivly, we get: $\theta_e = 10.82^{\circ}$ and $\theta_a = 26.57^{\circ}$
 
 3. Beregn radartverrsnittet ved 24 GHz til en hjørnereﬂektor som har sidekant a = 21 cm.
+
 
 4. Hvor mye må reﬂektoren beveges radielt for at I-Q-phasoren skal foreta et 360-graders fase-omløp?
