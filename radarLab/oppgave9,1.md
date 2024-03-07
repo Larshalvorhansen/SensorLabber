@@ -13,6 +13,9 @@ for radaren.
     * Using the $\theta$ equation with both the heigth $D_e = 65.4 mm$ and width $D_a = 25mm$ of the radar respectivly, we get: $\theta_e = 10.82^{\circ}$ and $\theta_a = 26.57^{\circ}$
 
 3. Beregn radartverrsnittet ved 24 GHz til en hjørnereﬂektor som har sidekant a = 21 cm.
-
+   * Vi bruker at $A_{eff}=\frac{a^2}{\sqrt{3}}$ og setter inn for a.
+   * Da får vi $A_{eff}=0.025m^2$
+   * For å finne det effektive radartverrsnittet bruker vi at $\sigma = \frac{4\pi a^4}{3\lambda^2} = 52.1$
 
 4. Hvor mye må reﬂektoren beveges radielt for at I-Q-phasoren skal foreta et 360-graders fase-omløp?
+    * 
