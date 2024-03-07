@@ -7,6 +7,9 @@
 2. Beregn antennevinning ut fra ligning (III.7) og sammenlign med data som ﬁns i databladet
 for radaren.
     * Vi bruker formelen $G[dBi] \approx 10 log_{10}(\frac{3*10^4}{\theta_e \theta_a})$
+    * Vi må bruke $\theta \approx arctan(\frac{\lambda}{D})$ for hhv høyde og bredde på radaren for å beregne hhv $\theta_e$ og $\theta_a$
+    * $\theta \approx arctan(\frac{\lambda}{D})$
+    * $\lambda = c/f = \frac{3*10^8}{24 * 10`}$
 
 3. Beregn radartverrsnittet ved 24 GHz til en hjørnereﬂektor som har sidekant a = 21 cm.
 
