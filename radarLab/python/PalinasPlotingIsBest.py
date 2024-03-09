@@ -70,6 +70,104 @@ def plot_data(data,filename='plot',xmin = 0,xmax= 1):
 
 # FFT og ovs ....
     
+def SNR (positive_freq, signal_freq_range,noise_freq_range, positive_magnitude):
+     # Calculate power in the signal and noise frequency ranges
+        signal_mask = (positive_freq >= signal_freq_range[0]) & (positive_freq <= signal_freq_range[1])
+        noise_mask = (positive_freq >= noise_freq_range[0]) & (positive_freq <= noise_freq_range[1])
+
+        signal_power = np.sum(positive_magnitude[signal_mask]**2)
+        noise_power = np.sum(positive_magnitude[noise_mask]**2)
+
+        # Calculate SNR
+        SNR = 10 * np.log10(signal_power / noise_power)
+        return SNR
 
 
+def peak (positive_freq, positive_magnitude):
+        # Define your frequency range
+        start_freq = 0.5
+        end_freq = 5
+
+        # Step 1: Identify the indices within the specified frequency range
+        freq_range_mask = (positive_freq >= start_freq) & (positive_freq <= end_freq)
+
+        # Apply the mask to get frequencies and magnitudes within the range
+        freq_in_range = positive_freq[freq_range_mask]
+        magnitude_in_range = positive_magnitude[freq_range_mask]
+
+        # Step 2: Find the index of the maximum value in the magnitude within the range
+        max_index = np.argmax(magnitude_in_range)
+
+        # Step 3: Extract the frequency and magnitude of the peak
+        peak_frequency = freq_in_range[max_index]
+        peak_magnitude = magnitude_in_range[max_index]
+
+        print(f"Peak frequency: {peak_frequency} Hz, Peak magnitude: {peak_magnitude} dB")
+        return peak_frequency, peak_magnitude
+
+
+
+
+
+def plot_fft_with_zero_padding(data, sample_rate, frec_spek, signal_freq_range, noise_freq_range,Title="Bilde1"):
+    """
+    Plot the FFT of multiple signals with zero-padding and Hann window applied and calculate SNR.
+
+    Parameters:
+    data (numpy.ndarray): The input signals, expected shape (samples, channels).
+    sample_rate (float): The sampling rate of the signals.
+    frec_spek (float): The maximum frequency to be plotted.
+    signal_freq_range (tuple): The frequency range considered as signal (start_freq, end_freq).
+    noise_freq_range (tuple): The frequency range considered as noise (start_freq, end_freq).
+    """
+
+    plt.figure(figsize=(22, 8))
+    
+
+    for j in range(data.shape[1]):  # Iterate over channels
+        d = data[:, j]
+        d = d - np.mean(d)
+
+        # Apply Hann window to the signal
+        windowed_data = d * np.hanning(len(d))
+
+        # Zero-padding: Length to the next power of 2 for better FFT performance and resolution
+        N = len(windowed_data)
+        #N_padded=N
+        N_padded = 2**np.ceil(np.log2(N)).astype(int)
+
+        # Perform FFT with zero-padding
+        fft_result = fft(windowed_data, n=N_padded)
+        fft_magnitude = np.abs(fft_result)
+
+        # Frequency bins
+        freq = fftfreq(N_padded, 1/sample_rate)
+
+        # Only take the positive half of the spectrum
+        positive_freq = freq[:N_padded//2]
+        positive_magnitude = fft_magnitude[:N_padded//2]
+
+        
+        SNR = SNR (positive_freq, signal_freq_range,noise_freq_range, positive_magnitude)
+        print(f'Channel {j+1} SNR: {SNR:.2f} dB')
+
+        # Plotting each frequency component in the same figure
+        #plt.plot(positive_freq, 20*np.log10(positive_magnitude), label=f'Channel {j+1} - SNR: {SNR:.2f} dB')  # Plot in dB
+        plt.plot(positive_freq, 20*np.log10(positive_magnitude) - np.max(20*np.log10(positive_magnitude)), label=f'Channel {j+1}')  # Convert magnitude to dB
+   
+   # Assuming 'positive_freq' and 'positive_magnitude' are your frequency and magnitude arrays
+    
+
+    print(np.min(20*np.log10(positive_magnitude))-5)
+    plt.xlabel('Frequency (Hz)', fontsize=22)
+    plt.ylabel('Magnitude (dB)', fontsize=22)
+    plt.xlim(0, frec_spek)
+    plt.ylim(np.min(20*np.log10(positive_magnitude))-100,5)  # Adjust the y-axis limits appropriately
+    plt.grid(True)
+    plt.title(Title)
+    plt.legend(loc='best', fontsize='xx-large', frameon=True, shadow=True, borderpad=1)
+    plt.show()
+
+
+    return peak (positive_freq, positive_magnitude)
 
