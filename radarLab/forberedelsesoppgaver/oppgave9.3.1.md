@@ -2,8 +2,7 @@
 * Hvorfor er disse knekkfrekvensene
 fornuftige å bruke bl.a ut fra kjennskap til forventet dopplerskift og AD-konverterne som brukes?
     * Knekkfrekvensene som gir opphav til båndbredden $3Hz - 48GHz$ er fornuftige fordi de fleste objekter som måles med 24GHz radar resulterer i et frekvenspekter mellom $3Hz - 24GHz$. For å unngå aliasing setter vi øvre grense på Nyquist frekvensen som er $2*24GHz = 48GHz$.
-  * I tilleg ligger det en DC komponent å 
-
+  * I tilleg ligger det en DC komponent å lurer. Den blir iallefall godt dempet av filteret.
 
 Finn ut hvilke komponenter i oppkoplingen til op-amp/ﬁlter som bestemmer henholdsvis
 øvre- og nedre knekkfrekvens og beregn disse komponentverdiene ut fra de spesiﬁserte knekk-
