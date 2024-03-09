@@ -70,23 +70,25 @@ def plot_data(data,filename='plot',xmin = 0,xmax= 1):
 
 # FFT og ovs ....
     
-def SNR (positive_freq, signal_freq_range,noise_freq_range, positive_magnitude):
-     # Calculate power in the signal and noise frequency ranges
-        signal_mask = (positive_freq >= signal_freq_range[0]) & (positive_freq <= signal_freq_range[1])
-        noise_mask = (positive_freq >= noise_freq_range[0]) & (positive_freq <= noise_freq_range[1])
+def calculate_SNR(positive_freq, signal_freq_range, noise_freq_range, positive_magnitude):
+    # Calculate power in the signal and noise frequency ranges
+    signal_mask = (positive_freq >= signal_freq_range[0]) & (positive_freq <= signal_freq_range[1])
+    noise_mask = (positive_freq >= noise_freq_range[0]) & (positive_freq <= noise_freq_range[1])
 
-        signal_power = np.sum(positive_magnitude[signal_mask]**2)
-        noise_power = np.sum(positive_magnitude[noise_mask]**2)
+    signal_power = np.sum(positive_magnitude[signal_mask]**2)
+    noise_power = np.sum(positive_magnitude[noise_mask]**2)
 
-        # Calculate SNR
-        SNR = 10 * np.log10(signal_power / noise_power)
-        return SNR
+    # Calculate SNR
+    SNR_value = 10 * np.log10(signal_power / noise_power)
+    return SNR_value
 
 
-def peak (positive_freq, positive_magnitude):
+
+
+def peak (min, max, positive_freq, positive_magnitude):
         # Define your frequency range
-        start_freq = 0.5
-        end_freq = 5
+        start_freq = min
+        end_freq = max
 
         # Step 1: Identify the indices within the specified frequency range
         freq_range_mask = (positive_freq >= start_freq) & (positive_freq <= end_freq)
@@ -122,7 +124,6 @@ def plot_fft_with_zero_padding(data, sample_rate, frec_spek, signal_freq_range, 
     """
 
     plt.figure(figsize=(22, 8))
-    
 
     for j in range(data.shape[1]):  # Iterate over channels
         d = data[:, j]
@@ -148,9 +149,8 @@ def plot_fft_with_zero_padding(data, sample_rate, frec_spek, signal_freq_range, 
         positive_magnitude = fft_magnitude[:N_padded//2]
 
         
-        SNR = SNR (positive_freq, signal_freq_range,noise_freq_range, positive_magnitude)
-        print(f'Channel {j+1} SNR: {SNR:.2f} dB')
-
+        SNR_value = calculate_SNR(positive_freq, signal_freq_range, noise_freq_range, positive_magnitude)
+        print(f'Channel {j+1} SNR: {SNR_value:.2f} dB')
         # Plotting each frequency component in the same figure
         #plt.plot(positive_freq, 20*np.log10(positive_magnitude), label=f'Channel {j+1} - SNR: {SNR:.2f} dB')  # Plot in dB
         plt.plot(positive_freq, 20*np.log10(positive_magnitude) - np.max(20*np.log10(positive_magnitude)), label=f'Channel {j+1}')  # Convert magnitude to dB
@@ -161,7 +161,7 @@ def plot_fft_with_zero_padding(data, sample_rate, frec_spek, signal_freq_range, 
     print(np.min(20*np.log10(positive_magnitude))-5)
     plt.xlabel('Frequency (Hz)', fontsize=22)
     plt.ylabel('Magnitude (dB)', fontsize=22)
-    plt.xlim(0, frec_spek)
+    plt.xlim(0.1, frec_spek)
     plt.ylim(np.min(20*np.log10(positive_magnitude))-100,5)  # Adjust the y-axis limits appropriately
     plt.grid(True)
     plt.title(Title)
@@ -169,5 +169,23 @@ def plot_fft_with_zero_padding(data, sample_rate, frec_spek, signal_freq_range, 
     plt.show()
 
 
-    return peak (positive_freq, positive_magnitude)
+    return peak (3,1000, positive_freq, positive_magnitude)
 
+
+
+
+#Testing 
+
+sample_rate, data = raspi_import('data/100Hz')
+print(data.shape,sample_rate )
+
+print(data)
+frec_spek = 1300
+
+plot_data(data, 0.2,0.4)
+signal_freq_range = (980, 1010)
+noise_freq_range = (1100, 1200) 
+#plot_fft_with_zero_padding(data, sample_rate, frec_spek, signal_freq_range, noise_freq_range)
+#plot_fft_without_window_or_padding(data, sample_rate, frec_spek)
+#plot_fft_with_zero_padding_1(data, 31250, frec_spek)
+plot_fft_with_zero_padding(data, 31250, frec_spek,signal_freq_range,noise_freq_range)
