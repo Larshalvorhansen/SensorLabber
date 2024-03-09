@@ -9,7 +9,7 @@ y = []
 with open('radarLab/data/BigBrainHighIQdata.csv','r') as csvfile: 
     plots = csv.reader(csvfile, delimiter = ',')
 
-for row in plots: 
+for row in plt: 
         x.append(row[0]) 
         y.append(int(row[2])) 
 
