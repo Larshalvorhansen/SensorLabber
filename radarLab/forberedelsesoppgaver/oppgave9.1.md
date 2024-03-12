@@ -4,7 +4,7 @@
     * Vi bruker formelen $f_D=\frac{2f_0 v_r}{c}$
     * $f_D \approx 160.9 v_r$
     * $v_r \approx f_D/160.9$
-    * $δfD = 1/T$
+    * $δf_D = 1/T$
     * Der $v_r$ er bilen sin hastighet i ønsket retning, og T er observasjonstiden (dvs tiden radaren observerer målet mens det er i bevegelse). Dette vil i
 praksis være måletiden (lengden på måledatane dere samler inn). Hvis hastigheten er konstant under
 observasjonstiden, vil δfD tilsvare 3dB-bredden på frekvenslinjen i dopplerspekteret som kommer
