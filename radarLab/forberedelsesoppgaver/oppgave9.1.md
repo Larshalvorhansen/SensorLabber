@@ -5,7 +5,7 @@
     * $f_D \approx 160.9 v_r$
     * $v_r \approx f_D/160.9$
     * $δfD = 1/T$
-    * Der $v_r$
+    * Der $v_r$ er bilen sin hastighet i ønsket retning, $
 
 2. Beregn antennevinning ut fra ligning (III.7) og sammenlign med data som ﬁns i databladet
 for radaren.
