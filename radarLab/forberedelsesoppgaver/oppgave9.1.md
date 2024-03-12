@@ -5,8 +5,10 @@
     * $f_D \approx 160.9 v_r$
     * $v_r \approx f_D/160.9$
     * $δfD = 1/T$
-    * Der $v_r$ er bilen sin hastighet i ønsket retning, $
-
+    * Der $v_r$ er bilen sin hastighet i ønsket retning, og T er observasjonstiden (dvs tiden radaren observerer målet mens det er i bevegelse). Dette vil i
+praksis være måletiden (lengden på måledatane dere samler inn). Hvis hastigheten er konstant under
+observasjonstiden, vil δfD tilsvare 3dB-bredden på frekvenslinjen i dopplerspekteret som kommer
+fram etter Fouriertransformen
 2. Beregn antennevinning ut fra ligning (III.7) og sammenlign med data som ﬁns i databladet
 for radaren.
     * Vi bruker formelen $G[dBi] \approx 10 log_{10}(\frac{3*10^4}{\theta_e \theta_a})$
