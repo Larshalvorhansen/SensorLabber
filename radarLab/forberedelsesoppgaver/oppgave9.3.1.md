@@ -6,7 +6,7 @@ fornuftige å bruke bl.a ut fra kjennskap til forventet dopplerskift og AD-konve
 
 Finn ut hvilke komponenter i oppkoplingen til op-amp/ﬁlter som bestemmer henholdsvis
 øvre- og nedre knekkfrekvens og beregn disse komponentverdiene ut fra de spesiﬁserte knekk-
-frekvensene. Mål frekvensresponsen til forsterken med ﬁlteret. Lagre data slik at dere kan
+frekvensene. Mål frekvensresponsen til forsterken med ﬁlteret. Lagre data slik at dere kanq
 generere Bode-plott til labrapport.
 1. Bruk radaren til å måle hastigheten til et objekt som beveger seg radielt i mot eller vekk fra
 radaren. Finn en egnet alternativ metode for å måle hastigheten (f.eks vha stoppeklokke over
