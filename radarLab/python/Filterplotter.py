@@ -22,8 +22,14 @@ with open(filename) as csvfile:
     #Leser første linje i csv-fila (den med navn til kanalene)
     header = next(csvreader)
     for datapoint in csvreader:
-        values = [float(value) for value in datapoint]
+        values = []
+        for value in datapoint:
+            if value:  # Check if the string is not empty
+                values.append(float(value))
+            else:
+                values.append(0.0)  # You can choose to append a default value or skip this value
         data.append(values)
+
 #Legger inn data fra hver kanal i hver sin liste
 time1 = [(p[0]) for p in data]
 data4=[(p[1]) for p in data] #inngangsignalet 
@@ -62,7 +68,7 @@ ax.legend(loc='best',fontsize=20) #Rutenett
 ax.grid(True)
 plt.show()
 
-#fig.savefig('signalrespons', dpi=300, bbox_inches='tight')
+fig.savefig('signalrespons', dpi=300, bbox_inches='tight')
 
 
 
@@ -117,4 +123,4 @@ ax.legend(loc='best',fontsize=20) #Rutenett
 ax.grid(True)
 plt.show()
 
-#fig.savefig('signalrespons', dpi=300, bbox_inches='tight')
+fig.savefig('signalrespons', dpi=300, bbox_inches='tight')

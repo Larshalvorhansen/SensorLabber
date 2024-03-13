@@ -102,9 +102,6 @@ def calculate_SNR(positive_freq, signal_freq_range, noise_freq_range, positive_m
     return SNR_value
 
 
-
-
-
 def find_peak_frequency(start_freq, end_freq, positive_freq, positive_magnitude):
     """
     Identify the peak frequency and its magnitude within a specified frequency range.
@@ -181,14 +178,13 @@ def calculate_fft_with_zero_padding(data, sample_rate, frec_spek, signal_freq_ra
         full_magnitude = fft_magnitude
 
         # Calculate SNR - might still focus on a part of the spectrum for relevance
-        SNR_value = calculate_SNR(full_freq[:N_padded//2], signal_freq_range, noise_freq_range, full_magnitude[:N_padded//2])
+        SNR_value = calculate_SNR(full_freq, signal_freq_range, noise_freq_range, full_magnitude)
         frequency_topp, magnitude_topp = find_peak_frequency(-frec_spek, frec_spek, full_freq, full_magnitude)
 
         #print(f"Peak frequency: {frequency_topp} Hz, Peak magnitude: {magnitude_topp/10000} dB")
         #print(f'Channel {j+1} SNR: {SNR_value:.2f} dB')
 
     return SNR_value, frequency_topp, magnitude_topp
-
 
 
 def plot_fft_with_zero_padding(data, sample_rate, frec_spek, signal_freq_range, noise_freq_range, Title="Bilde1"):
@@ -247,18 +243,18 @@ def plot_fft_with_zero_padding(data, sample_rate, frec_spek, signal_freq_range, 
 
 #plot_data(data,(2,4), 'channels',0.2,0.25)
 frec_spek = 1000
-signal_freq_range = (980, 1010)
-noise_freq_range = (1100, 1200) 
+ 
 
 hastighetmot = ['data/hastighetmotsat1','data/hastighetmotsat2','data/hastighetmotsatt21','data/hastighetmotsatt22','data/hastighetmotsatt23','data/hastighetmotsatt24','data/hastighetmotsatt25','data/hastighetmotsatt26','data/hastighetmotsatt27']
 hastighet1 =['data/hastighet11','data/hastighet12', 'data/hastighet13','data/hastighet14','data/hastighet15','data/hastighet16']
 hastighet2 =['data/hastighet21','data/hastighet22', 'data/hastighet23','data/hastighet24','data/hastighet25','data/hastighet26','data/hastighet27']
 
 
-
 hast_mot_data=[]
 hast_mot_peaks=[]
 SNR_mot_peaks=[]
+signal_freq_range = (370, 410)
+noise_freq_range = (500, 600)
 # Loop through all files
 for filename in hastighetmot:
     # Read data using your custom function (assuming it returns two values)
@@ -277,11 +273,11 @@ for filename in hastighetmot:
     #print(f' Motsatt hastighet {1} SNR: {SNR:.2f} dB')
 
 
-
-
 hast_1_data=[]
 hast_1_peaks=[]
 SNR_1_peaks=[]
+signal_freq_range = (-165, -130)
+noise_freq_range = (200, 300)
 for filename in hastighet1:
     # Read data using your custom function (assuming it returns two values)
     sample_rate, data_1 = raspi_import(filename)
@@ -290,14 +286,20 @@ for filename in hastighet1:
     hast_1_data.append((sample_rate, data_1))
     
     # Compute FFT and find peaks (adjust the arguments as necessary)
+    #plot_fft_with_zero_padding(data_1 , 31250, frec_spek,signal_freq_range,noise_freq_range,'Hastighet 1')
     SNR, peak_f_result, max_magnitude= calculate_fft_with_zero_padding(data_1 , 31250, frec_spek,signal_freq_range,noise_freq_range,'Hastighet 1')
     # Store the peaks
     hast_1_peaks.append(peak_f_result)
     SNR_1_peaks.append(SNR)
 
+
+
+
 hast_2_data=[]
 hast_2_peaks=[]
 SNR_2_peaks=[]
+signal_freq_range = ( -315,-230)
+noise_freq_range = (400, 500)
 for filename in hastighet2:
     # Read data using your custom function (assuming it returns two values)
     sample_rate, data_2 = raspi_import(filename)
@@ -306,6 +308,7 @@ for filename in hastighet2:
     hast_2_data.append((sample_rate, data_2))
     
     # Compute FFT and find peaks (adjust the arguments as necessary)
+    #plot_fft_with_zero_padding(data_2 , 31250, frec_spek,signal_freq_range,noise_freq_range,'Hastighet 2')
     SNR, peak_f_result, max_magnitude= calculate_fft_with_zero_padding(data_2, 31250, frec_spek,signal_freq_range,noise_freq_range,'Hastighet 2')
 
     # Store the peaks
@@ -316,4 +319,50 @@ print("Frekvens til hastighet i motsatt retning", hast_mot_peaks,"\n")
 print("Frekvens til hastighet 1",hast_1_peaks,"\n")
 print("Frekvens til hastighet 2",hast_2_peaks,"\n")
 
+velocity_1 = [data / 160.9 for data in  hast_1_peaks]
+velocity_2 = [data / 160.9 for data in hast_2_peaks]
+velocity_mot = [data / 160.9 for data in hast_mot_peaks]  # This seems to be the same as velocity_2, based on your code
 
+
+
+print("Hastighet i motsatt retning", velocity_mot,"\n")
+print("Hastighet 1",velocity_1,"\n")
+print("Hastighet 2",velocity_2,"\n")
+
+print(" SNR til hastighet i motsatt retning", SNR_mot_peaks,"\n")
+print("SNR til hastighet 1",SNR_1_peaks,"\n")
+print("SNR til hastighet 2",SNR_2_peaks,"\n")
+
+
+
+# Anta at velocity_1, velocity_2, og velocity_mot er definert som vist tidligere
+velocity_1 = np.array(velocity_1)
+velocity_2 = np.array(velocity_2)
+velocity_mot = np.array(velocity_mot)
+
+# Beregne gjennomsnittet 
+gjennomsninlig_mot= np.mean(velocity_mot)
+gjennomsninlig_1= np.mean(velocity_1)
+gjennomsninlig_2= np.mean(velocity_2)
+
+# Beregne varians
+varians_1 = np.var(velocity_1, ddof=1)
+varians_2 = np.var(velocity_2, ddof=1)
+varians_mot = np.var(velocity_mot, ddof=1)
+
+# Beregne standardavvik
+std_dev_1 = np.std(velocity_1, ddof=1)
+std_dev_2 = np.std(velocity_2, ddof=1)
+std_dev_mot = np.std(velocity_mot, ddof=1)
+
+print(f"Varians for Hastighet 1: {varians_1}")
+print(f"Standardavvik for Hastighet 1: {std_dev_1}")
+print(f"Gjennomsnitlig hastighet 1: {gjennomsninlig_1}\n")
+
+print(f"Varians for Hastighet 2: {varians_2}")
+print(f"Standardavvik for Hastighet 2: {std_dev_2}")
+print(f"Gjennomsnitlig hastighet 2: {gjennomsninlig_2}\n")
+
+print(f"Varians for Hastighet i motsatt retning: {varians_mot}")
+print(f"Standardavvik for Hastighet i motsatt retning: {std_dev_mot}")
+print(f"Gjennomsnitlig hastighet mot: {gjennomsninlig_mot}\n")
