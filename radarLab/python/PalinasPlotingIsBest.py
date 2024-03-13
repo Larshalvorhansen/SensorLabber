@@ -33,17 +33,22 @@ def raspi_import(path, channels=5):
     return sample_period, data 
 
 #Plotte raw data til ADC
-def plot_data(data,filename='plot',xmin = 0,xmax= 1):
+def plot_data(data,channels,filename='plot',xmin = 0,xmax= 1):
     # Number of channels
     num_channels = data.shape[1]
     
+    #num_channels = [0,1,2,4]
     # Time array (assuming equal spacing)
     sample_period = 32e-6  # example value, replace with your actual sample period
     time = np.arange(data.shape[0]) * sample_period
-
+     
+    
+     
     # Plot each channel in a separate subplot
     fig, axs = plt.subplots(num_channels, 1, figsize=(8, 10))
-    for i in range(num_channels):
+    #for i in range(num_channels):
+    for i in(channels):
+        print (i)
         d=data[:, i]
         axs[i].plot(time, d)
         axs[i].set_title(f'Channel {i+1}',fontsize=16)
@@ -56,7 +61,7 @@ def plot_data(data,filename='plot',xmin = 0,xmax= 1):
 
     # Plot all channels in one plot for comparison
     plt.figure(figsize=(22, 8))
-    for i in range(num_channels):
+    for i in (channels):
         plt.plot(time, data[:, i]+i, label=f'Channel {i+1}')
 
     plt.xlabel('Time (s)',fontsize=22)
@@ -109,10 +114,11 @@ def peak (min, max, positive_freq, positive_magnitude):
 
 
 
+"""
 
-
-def plot_fft_with_zero_padding(data, sample_rate, frec_spek, signal_freq_range, noise_freq_range,Title="Bilde1"):
+def plot_fft_with_zero_padding(data, sample_rate, frec_spek, signal_freq_range, noise_freq_range,channels,Title="Bilde1"):
     """
+"""
     Plot the FFT of multiple signals with zero-padding and Hann window applied and calculate SNR.
 
     Parameters:
@@ -122,10 +128,11 @@ def plot_fft_with_zero_padding(data, sample_rate, frec_spek, signal_freq_range, 
     signal_freq_range (tuple): The frequency range considered as signal (start_freq, end_freq).
     noise_freq_range (tuple): The frequency range considered as noise (start_freq, end_freq).
     """
-
+"""
     plt.figure(figsize=(22, 8))
-
-    for j in range(data.shape[1]):  # Iterate over channels
+    
+    #for j in range(data.shape[1]):  # Iterate over channels
+    for j in (channels):
         d = data[:, j]
         d = d - np.mean(d)
 
@@ -161,7 +168,7 @@ def plot_fft_with_zero_padding(data, sample_rate, frec_spek, signal_freq_range, 
     print(np.min(20*np.log10(positive_magnitude))-5)
     plt.xlabel('Frequency (Hz)', fontsize=22)
     plt.ylabel('Magnitude (dB)', fontsize=22)
-    plt.xlim(0.1, frec_spek)
+    plt.xlim(-frec_spek, frec_spek)
     plt.ylim(np.min(20*np.log10(positive_magnitude))-100,5)  # Adjust the y-axis limits appropriately
     plt.grid(True)
     plt.title(Title)
@@ -173,16 +180,66 @@ def plot_fft_with_zero_padding(data, sample_rate, frec_spek, signal_freq_range, 
 
 
 
+"""
+
+
+
+
+def plot_fft_with_zero_padding(data, sample_rate, frec_spek, signal_freq_range, noise_freq_range, Title="Bilde1"):
+    plt.figure(figsize=(22, 8))
+    channels=data.shape[1]
+    for j in range(channels):
+        d = data[:, j]
+        d = d - np.mean(d)
+
+        # Apply Hann window to the signal
+        windowed_data = d * np.hanning(len(d))
+
+        # Zero-padding: Length to the next power of 2 for better FFT performance and resolution
+        N = len(windowed_data)
+        N_padded = 2**np.ceil(np.log2(N)).astype(int)
+
+        # Perform FFT with zero-padding
+        fft_result = fft(windowed_data, n=N_padded)
+        fft_magnitude = np.abs(fft_result)
+
+        # Frequency bins
+        freq = fftfreq(N_padded, 1/sample_rate)
+
+        # Adjusted to use the full spectrum for plotting and calculations
+        full_freq = freq
+        full_magnitude = fft_magnitude
+
+        # Calculate SNR - might still focus on a part of the spectrum for relevance
+        SNR_value = calculate_SNR(full_freq[:N_padded//2], signal_freq_range, noise_freq_range, full_magnitude[:N_padded//2])
+        print(f'Channel {j+1} SNR: {SNR_value:.2f} dB')
+
+        plt.plot(full_freq, 20*np.log10(full_magnitude) - np.max(20*np.log10(full_magnitude)), label=f'Channel {j+1}')
+
+    plt.xlabel('Frequency (Hz)', fontsize=22)
+    plt.ylabel('Magnitude (dB)', fontsize=22)
+    plt.xlim(-frec_spek, frec_spek)
+    plt.ylim(np.min(20*np.log10(full_magnitude))-100,5)  # Adjust y-axis limits appropriately
+    plt.grid(True)
+    plt.title(Title)
+    plt.legend(loc='best', fontsize='xx-large', frameon=True, shadow=True, borderpad=1)
+    plt.show()
+
+    # Depending on your requirements, adjust or keep this call to focus on the positive spectrum for peak analysis
+    return peak(3, 1000, full_freq[:N_padded//2], full_magnitude[:N_padded//2])
+
 
 #Testing 
 
-sample_rate, data = raspi_import('data/100Hz')
+sample_rate, data = raspi_import('data/hastighet11')
 print(data.shape,sample_rate )
 
 print(data)
 frec_spek = 1300
 
-plot_data(data, 0.2,0.4)
+data = np.array([data[:,2]+1j*data[:,4]]).T  # Makes data two-dimensional again but with one "channel"
+
+#plot_data(data,(2,4), 'channels',0.2,0.25)
 signal_freq_range = (980, 1010)
 noise_freq_range = (1100, 1200) 
 #plot_fft_with_zero_padding(data, sample_rate, frec_spek, signal_freq_range, noise_freq_range)
