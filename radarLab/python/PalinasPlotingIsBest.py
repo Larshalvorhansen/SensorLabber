@@ -243,9 +243,9 @@ def plot_fft_with_zero_padding(data, sample_rate, frec_spek, signal_freq_range, 
 
 #plot_data(data,(2,4), 'channels',0.2,0.25)
 frec_spek = 1000
- 
+ #'data/hastighetmotsat1','data/hastighetmotsat2',
 
-hastighetmot = ['data/hastighetmotsat1','data/hastighetmotsat2','data/hastighetmotsatt21','data/hastighetmotsatt22','data/hastighetmotsatt23','data/hastighetmotsatt24','data/hastighetmotsatt25','data/hastighetmotsatt26','data/hastighetmotsatt27']
+hastighetmot = ['data/hastighetmotsatt21','data/hastighetmotsatt22','data/hastighetmotsatt23','data/hastighetmotsatt24','data/hastighetmotsatt25','data/hastighetmotsatt26','data/hastighetmotsatt27']
 hastighet1 =['data/hastighet11','data/hastighet12', 'data/hastighet13','data/hastighet14','data/hastighet15','data/hastighet16']
 hastighet2 =['data/hastighet21','data/hastighet22', 'data/hastighet23','data/hastighet24','data/hastighet25','data/hastighet26','data/hastighet27']
 
@@ -259,12 +259,13 @@ noise_freq_range = (500, 600)
 for filename in hastighetmot:
     # Read data using your custom function (assuming it returns two values)
     sample_rate, data_mot = raspi_import(filename)
+    
     data_mot = np.array([data_mot[:,2]+1j*data_mot[:,4]]).T
     # Append the data to your storage list
     hast_mot_data.append((sample_rate, data_mot))
     
     # Compute FFT and find peaks (adjust the arguments as necessary)
-    #plot_fft_with_zero_padding(data_mot , 31250, frec_spek,signal_freq_range,noise_freq_range,'Motsatt hastighet')
+    plot_fft_with_zero_padding(data_mot , 31250, frec_spek,signal_freq_range,noise_freq_range,'Motsatt hastighet')
     SNR, peak_f_result, max_magnitude= calculate_fft_with_zero_padding(data_mot , 31250, frec_spek,signal_freq_range,noise_freq_range,'Motsatt hastighet')
     # Store the peaks
     hast_mot_peaks.append(peak_f_result)
@@ -281,6 +282,7 @@ noise_freq_range = (200, 300)
 for filename in hastighet1:
     # Read data using your custom function (assuming it returns two values)
     sample_rate, data_1 = raspi_import(filename)
+    #plot_data(data_1,(2,4), 'channels', 0.2,0.3)
     data_1 = np.array([data_1[:,2]+1j*data_1[:,4]]).T
     # Append the data to your storage list
     hast_1_data.append((sample_rate, data_1))

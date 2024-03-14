@@ -17,6 +17,11 @@ for radaren.
     * $\lambda = c/f \approx \frac{3*10^8}{24 * 10^9} = 0.0125 m$
     * Using the $\theta$ equation with both the heigth $D_e = 65.4 mm$ and width $D_a = 25mm$ of the radar respectivly, we get: $\theta_e = 10.82^{\circ}$ and $\theta_a = 26.57^{\circ}$
 
+
+
+
+    G i dB !!!!!
+
 3. Beregn radartverrsnittet ved 24 GHz til en hjørnereﬂektor som har sidekant a = 21 cm.
    * Vi bruker at $A_{eff}=\frac{a^2}{\sqrt{3}}$ og setter inn for a.
    * Da får vi $A_{eff}=0.025m^2$
