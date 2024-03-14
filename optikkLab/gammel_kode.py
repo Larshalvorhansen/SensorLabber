@@ -1,4 +1,20 @@
 
+import sys
+import numpy as np #Plotting
+import matplotlib.pyplot as plt #Lese CSV
+import csv
+from scipy.signal import correlate
+from scipy.fft import fft, ifft,fftfreq
+# Plotting 
+plt.rc('xtick', labelsize=19) # endre størrelsen på x-tall
+plt.rc('ytick', labelsize=19) # endre størrelse på y-tall
+plt.rcParams["figure.figsize"] = [8, 6] # endre størrelse på alle bildene 
+#plt.rcParams["figure.autolayout"] = True
+plt.rcParams['lines.linewidth'] = 2.5
+
+
+
+
 def raspi_import(path, channels=3):
     """
     Import data produced using adc_sampler.c.

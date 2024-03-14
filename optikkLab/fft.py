@@ -194,7 +194,7 @@ def calculate_fft_with_zero_padding(data, sample_rate, frec_spek):
 
         freq = fftfreq(N_padded, 1/sample_rate)[:N_padded//2]
 
-        # Assuming find_peak_frequency returns the peak frequency and its magnitude
+        # find_peak_frequency returns the peak frequency and its magnitude
         frequency_topp, magnitude_topp = find_peak_frequency(0.5, frec_spek, freq, fft_magnitude)        
         signal_freq_range = (frequency_topp-1, frequency_topp+1)
         noise_freq_range = (frequency_topp+5, frequency_topp+10)
@@ -275,22 +275,10 @@ def plot_fft_with_zero_padding(data, sample_rate, frec_spek, Title="Bilde1", ful
     
 ok = ['data_num/ok1','data_num/ok2','data_num/ok4','data_num/ok5','data_num/ok6']
 lille = ['data_num/lille2','data_num/lille3','data_num/lille4']
+palina =['data_num/palina_r1','data_num/palina_r2','data_num/palina1','data_num/palina2']
+random = ['data_num/robust4','data_num/test_frekvens','data_num/test_lab','data_num/test_out']
 
-
-
-# disse burde være outomatisert 
-frec_spek = 5
-signal_freq_range = (0.9, 1.2)
-noise_freq_range = (1.2, 8) 
-
-
-
-#sample_rate, data = raspi_import('data_num/test_frekvens')
-#plot_fft_with_zero_padding(data, 31250, frec_spek,signal_freq_range,noise_freq_range)
-
-
-
-
+frec_spek = 10
 
 
 def test(file_list,plot_fft=0,plot_data_flag=0):
@@ -310,9 +298,9 @@ def test(file_list,plot_fft=0,plot_data_flag=0):
         # Assuming raspi_import returns sample_rate and data
         sample_rate, data_test = raspi_import(filename)
         if plot_fft==1:   
-            plot_fft_with_zero_padding(data_test , 30, frec_spek,'Spektrum plot')
+            plot_fft_with_zero_padding(data_test , 30, frec_spek,f"Spektrum plot: {filename}")
         if plot_data_flag==1:
-            plot_data(data_test, filename='Raw data plot')
+            plot_data(data_test, filename=f"Raw data plot:{filename}")
 
         # Assuming calculate_fft_with_zero_padding returns SNRs, peaks, magnitudes for all channels
         SNRs, peak_results, magnitudes = calculate_fft_with_zero_padding(data_test, sample_rate, frec_spek)
@@ -332,7 +320,7 @@ def test(file_list,plot_fft=0,plot_data_flag=0):
 
 # Example usage
         
-        
-test(ok,1,1)
+
+test(ok,1)
 
 
