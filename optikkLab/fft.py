@@ -50,8 +50,6 @@ def raspi_import(path, channels=3):
     return sample_period, data
 
 
-
-
 def plot_data(data, sample_period=1/30, filename='plot', separate_channels=False):
     """
     Plot data from multiple channels.
@@ -92,10 +90,6 @@ def plot_data(data, sample_period=1/30, filename='plot', separate_channels=False
     plt.show()
 
 
-
-
-
-
 def calculate_SNR(positive_freq, positive_magnitude, signal_freq_range, noise_freq_range,):
     """
     Calculate the Signal-to-Noise Ratio (SNR) within specified frequency ranges.
@@ -123,8 +117,6 @@ def calculate_SNR(positive_freq, positive_magnitude, signal_freq_range, noise_fr
     return SNR_value
 
 
-
-
 def find_peak_frequency(start_freq, end_freq, freq, magnitude):
     """
     Identify the peak frequency and its magnitude within a specified frequency range.
@@ -150,7 +142,6 @@ def find_peak_frequency(start_freq, end_freq, freq, magnitude):
     peak_magnitude = magnitude_in_range[max_index]
 
     return peak_frequency, peak_magnitude
-
 
 
 def calculate_fft_with_zero_padding(data, sample_rate, frec_spek):
@@ -204,12 +195,6 @@ def calculate_fft_with_zero_padding(data, sample_rate, frec_spek):
         magnitude_topps[j] = magnitude_topp
 
     return SNRs, frequency_topps, magnitude_topps
-
-
-
-
-
-
 
 
 def plot_fft_with_zero_padding(data, sample_rate, frec_spek, Title="Bilde1", full = 0):
