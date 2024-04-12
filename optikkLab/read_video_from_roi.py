@@ -30,7 +30,7 @@ if len(sys.argv) < 3:
     print("Usage:\npython " + sys.argv[0] + " [path to input video file] [path to output data file]")
     exit()
     """
-filename = '/Users/polinaermakova/Documents/GitHub/SensorLabber/optikkLab/data_vid/boksOpptak2DritBra(68klokke).mp4'
+filename = 'data_vid/ok1.mp4'
 output_filename = 'data_num/test_lab'
 
 #read video file

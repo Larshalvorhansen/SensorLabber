@@ -60,7 +60,8 @@ def plot_data(data, sample_period=1/30, filename='plot', separate_channels=False
     - filename: str, base name for the output file.
     - separate_channels: bool, whether to plot each channel in a separate subplot.
     """
-    
+    channels_names = ['Blå fargekanal', 'Grønn fargekanal', 'Rød fargekanal']
+    channels__colors= ['b', 'g', 'r']
     num_channels = data.shape[1]  # Determine the number of channels dynamically
     time = np.arange(data.shape[0]) * sample_period
 
@@ -68,24 +69,25 @@ def plot_data(data, sample_period=1/30, filename='plot', separate_channels=False
         # Plot each channel in a separate subplot
         fig, axs = plt.subplots(num_channels, 1, figsize=(8, num_channels*2))
         for i in range(num_channels):
-            axs[i].plot(time, data[:, i])
+            axs[i].plot(time, data[:, i], channels__colors[i],label = channels_names[i])
             axs[i].set_title(f'Channel {i+1}')
             axs[i].set_xlabel('Time (s)')
             axs[i].set_ylabel('Amplitude [mV]')
             axs[i].grid()
+            axs[i].legend(loc='best', fontsize='xx-large')
+     
         plt.tight_layout()
-        fig.savefig(f'{filename}_channels.png', dpi=300, bbox_inches='tight')
+        #fig.savefig(f'{filename}_channels.png', dpi=300, bbox_inches='tight')
     else:
         # Plot all channels in one plot for comparison
         plt.figure(figsize=(22, 8))
         for i in range(num_channels):
-            plt.plot(time, data[:, i], label=f'Channel {i+1}')
-
-        plt.xlabel('Time (s)', fontsize=22)
-        plt.ylabel('Amplitude [mV]', fontsize=22)
-        plt.grid()
-        plt.legend(loc='best', fontsize='xx-large')
-        plt.savefig(f'{filename}_all_channels.png', dpi=300, bbox_inches='tight')
+            plt.plot(time, data[:, i], channels__colors[i],label=channels_names[i])
+            plt.xlabel('Time (s)', fontsize=22)
+            plt.ylabel('Amplitude [mV]', fontsize=22)
+            plt.grid()
+            plt.legend(loc='best', fontsize='xx-large')
+        #plt.savefig(f'{filename}_all_channels.png', dpi=300, bbox_inches='tight')
 
     plt.show()
 
@@ -187,8 +189,8 @@ def calculate_fft_with_zero_padding(data, sample_rate, frec_spek):
 
         # find_peak_frequency returns the peak frequency and its magnitude
         frequency_topp, magnitude_topp = find_peak_frequency(0.5, frec_spek, freq, fft_magnitude)        
-        signal_freq_range = (frequency_topp-1, frequency_topp+1)
-        noise_freq_range = (frequency_topp+5, frequency_topp+10)
+        signal_freq_range = (frequency_topp-0.5, frequency_topp+0.5)
+        noise_freq_range = (frequency_topp+0.5, frequency_topp+5)
 
         SNRs[j] = calculate_SNR(freq, fft_magnitude, signal_freq_range, noise_freq_range)
         frequency_topps[j] = frequency_topp
@@ -213,7 +215,8 @@ def plot_fft_with_zero_padding(data, sample_rate, frec_spek, Title="Bilde1", ful
     """
     plt.figure(figsize=(22, 8))
     channels=data.shape[1]
-
+    channels_names = ['Blå', 'Grønn', 'Rød']
+    channels__colors= ['b', 'g', 'r']
     for j in range(channels):
         d = data[:, j]
         d = d - np.mean(d)
@@ -241,7 +244,7 @@ def plot_fft_with_zero_padding(data, sample_rate, frec_spek, Title="Bilde1", ful
             full_freq = freq [:N_padded//2]
             full_magnitude = fft_magnitude [:N_padded//2]
 
-        plt.plot(full_freq, 20*np.log10(full_magnitude) - np.max(20*np.log10(full_magnitude)), label=f'Channel {j+1}')    
+        plt.plot(full_freq, 20*np.log10(full_magnitude) - np.max(20*np.log10(full_magnitude)), channels__colors[j],label=channels_names[j])    
     plt.xlabel('Frequency (Hz)', fontsize=22)
     plt.ylabel('Magnitude (dB)', fontsize=22)
     plt.xlim(0.5, frec_spek)
@@ -261,9 +264,9 @@ def plot_fft_with_zero_padding(data, sample_rate, frec_spek, Title="Bilde1", ful
 ok = ['data_num/ok1','data_num/ok2','data_num/ok4','data_num/ok5','data_num/ok6']
 lille = ['data_num/lille2','data_num/lille3','data_num/lille4']
 palina =['data_num/palina_r1','data_num/palina_r2','data_num/palina1','data_num/palina2']
-random = ['data_num/robust4','data_num/test_frekvens','data_num/test_lab','data_num/test_out']
+random = ['data_num/test_lab','data_num/robust4','data_num/test_frekvens','data_num/test_out']
 
-frec_spek = 10
+frec_spek = 5
 
 
 def test(file_list,plot_fft=0,plot_data_flag=0):
@@ -285,7 +288,7 @@ def test(file_list,plot_fft=0,plot_data_flag=0):
         if plot_fft==1:   
             plot_fft_with_zero_padding(data_test , 30, frec_spek,f"Spektrum plot: {filename}")
         if plot_data_flag==1:
-            plot_data(data_test, filename=f"Raw data plot:{filename}")
+            plot_data(data_test, filename=f"Raw data plot:{filename}",separate_channels=True)
 
         # Assuming calculate_fft_with_zero_padding returns SNRs, peaks, magnitudes for all channels
         SNRs, peak_results, magnitudes = calculate_fft_with_zero_padding(data_test, sample_rate, frec_spek)
@@ -306,6 +309,6 @@ def test(file_list,plot_fft=0,plot_data_flag=0):
 # Example usage
         
 
-test(ok,1)
+test(random,1,1)
 
 
