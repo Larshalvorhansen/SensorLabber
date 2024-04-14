@@ -2,7 +2,7 @@ import sys
 import numpy as np #Plotting
 import matplotlib.pyplot as plt #Lese CSV
 import csv
-from scipy.signal import correlate
+from scipy.signal import detrend
 from scipy.fft import fft, ifft,fftfreq
 # Plotting 
 plt.rc('xtick', labelsize=19) # endre størrelsen på x-tall
@@ -176,6 +176,7 @@ def calculate_fft_with_zero_padding(data, sample_rate, frec_spek):
         d = data[:, j] - np.mean(data[:, j])  # Subtract the mean to center the signal
 
         # Apply Hann window to the signal
+        
         windowed_data = d * np.hanning(len(d))
 
         # Zero-padding: Length to the next power of 2 for better FFT performance and resolution
@@ -220,6 +221,7 @@ def plot_fft_with_zero_padding(data, sample_rate, frec_spek, Title="Bilde1", ful
     for j in range(channels):
         d = data[:, j]
         d = d - np.mean(d)
+        d = detrend(d)
 
         # Apply Hann window to the signal
         windowed_data = d * np.hanning(len(d))
@@ -237,14 +239,20 @@ def plot_fft_with_zero_padding(data, sample_rate, frec_spek, Title="Bilde1", ful
 
         # Adjusted to use the full spectrum for plotting and calculations
         full_freq = freq 
-        full_magnitude = fft_magnitude 
+        full_magnitude = fft_magnitude
+
+        frequency_topp, magnitude_topp = find_peak_frequency(0.5, frec_spek, full_freq, full_magnitude) 
 
         # For å enklere plotte både negative og positive frekvenser 
         if full == 0:
             full_freq = freq [:N_padded//2]
             full_magnitude = fft_magnitude [:N_padded//2]
 
-        plt.plot(full_freq, 20*np.log10(full_magnitude) - np.max(20*np.log10(full_magnitude)), channels__colors[j],label=channels_names[j])    
+        plt.plot(full_freq, 20*np.log10(full_magnitude) - np.max(20*np.log10(full_magnitude)), channels__colors[j],label=channels_names[j])
+        plt.scatter(frequency_topp, magnitude_topp, color="black", marker='o', s=100)  # `s` is the size of the marker
+
+
+        
     plt.xlabel('Frequency (Hz)', fontsize=22)
     plt.ylabel('Magnitude (dB)', fontsize=22)
     plt.xlim(0.5, frec_spek)
@@ -286,7 +294,7 @@ def test(file_list,plot_fft=0,plot_data_flag=0):
         # Assuming raspi_import returns sample_rate and data
         sample_rate, data_test = raspi_import(filename)
         if plot_fft==1:   
-            plot_fft_with_zero_padding(data_test , 30, frec_spek,f"Spektrum plot: {filename}")
+            plot_fft_with_zero_padding(data_test, 30, frec_spek,f"Spektrum plot: {filename}")
         if plot_data_flag==1:
             plot_data(data_test, filename=f"Raw data plot:{filename}",separate_channels=True)
 
@@ -309,6 +317,6 @@ def test(file_list,plot_fft=0,plot_data_flag=0):
 # Example usage
         
 
-test(random,1,1)
+test(ok,1)
 
 
