@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt #Lese CSV
 import csv
 from scipy.signal import detrend
 from scipy.fft import fft, ifft,fftfreq
+
+import os
 # Plotting 
 plt.rc('xtick', labelsize=19) # endre størrelsen på x-tall
 plt.rc('ytick', labelsize=19) # endre størrelse på y-tall
@@ -65,6 +67,13 @@ def plot_data(data, sample_period=1/30, filename='plot', separate_channels=False
     num_channels = data.shape[1]  # Determine the number of channels dynamically
     time = np.arange(data.shape[0]) * sample_period
 
+    safe_filename = filename.replace(':', '_').replace('/', '_').replace(' ','_')
+
+# Ensure the directory for the plots exists
+    dir_name = "plots"
+    os.makedirs(dir_name, exist_ok=True)  # Create the directory if it does not exist
+    
+    
     if separate_channels:
         # Plot each channel in a separate subplot
         fig, axs = plt.subplots(num_channels, 1, figsize=(8, num_channels*2))
@@ -77,16 +86,18 @@ def plot_data(data, sample_period=1/30, filename='plot', separate_channels=False
             axs[i].legend(loc='best', fontsize='xx-large')
      
         plt.tight_layout()
-        #fig.savefig(f'{filename}_channels.png', dpi=300, bbox_inches='tight')
+        fig.savefig(os.path.join(dir_name, f'{safe_filename}_channels.png'), dpi=300, bbox_inches='tight')        #fig.savefig(f'{filename}_channels.png', dpi=300, bbox_inches='tight')
     else:
         # Plot all channels in one plot for comparison
-        plt.figure(figsize=(22, 8))
+        plt.figure(figsize=(11, 8))
         for i in range(num_channels):
             plt.plot(time, data[:, i], channels__colors[i],label=channels_names[i])
             plt.xlabel('Time (s)', fontsize=22)
-            plt.ylabel('Amplitude [mV]', fontsize=22)
+            plt.ylabel('Eksponering [0-255]', fontsize=22)
             plt.grid()
             plt.legend(loc='best', fontsize='xx-large')
+      
+            plt.savefig(os.path.join(dir_name, f'{safe_filename}_all_channels.png'), dpi=300, bbox_inches='tight')
         #plt.savefig(f'{filename}_all_channels.png', dpi=300, bbox_inches='tight')
 
     plt.show()
@@ -189,8 +200,8 @@ def calculate_fft_with_zero_padding(data, sample_rate, frec_spek):
         freq = fftfreq(N_padded, 1/sample_rate)[:N_padded//2]
 
         # find_peak_frequency returns the peak frequency and its magnitude
-        frequency_topp, magnitude_topp = find_peak_frequency(0.5, frec_spek, freq, fft_magnitude)        
-        signal_freq_range = (frequency_topp-0.5, frequency_topp+0.5)
+        frequency_topp, magnitude_topp = find_peak_frequency(0.67, frec_spek, freq, fft_magnitude)        
+        signal_freq_range = (frequency_topp-0.25, frequency_topp+0.25)
         noise_freq_range = (frequency_topp+0.5, frequency_topp+5)
 
         SNRs[j] = calculate_SNR(freq, fft_magnitude, signal_freq_range, noise_freq_range)
@@ -198,6 +209,7 @@ def calculate_fft_with_zero_padding(data, sample_rate, frec_spek):
         magnitude_topps[j] = magnitude_topp
 
     return SNRs, frequency_topps, magnitude_topps
+
 
 
 def plot_fft_with_zero_padding(data, sample_rate, frec_spek, Title="Bilde1", full = 0):
@@ -214,13 +226,25 @@ def plot_fft_with_zero_padding(data, sample_rate, frec_spek, Title="Bilde1", ful
     Outputs:
     - A plot displaying the FFT magnitude in dB for each channel within the specified frequency range.
     """
-    plt.figure(figsize=(22, 8))
+# Sanitize the Title to be used as a filename
+    safe_title = Title.replace(':', '').replace('/', '_')  # Replace colons and slashes
+    filename = f'{safe_title}.png'
+
+    # Ensure the directory for the plot exists (adjust this path as needed)
+    dir_name = "finnplott"
+    if not os.path.exists(dir_name):
+        os.makedirs(dir_name)
+    full_path = os.path.join(dir_name, filename)
+
+
+
+    plt.figure(figsize=(11, 8))
     channels=data.shape[1]
     channels_names = ['Blå', 'Grønn', 'Rød']
     channels__colors= ['b', 'g', 'r']
     for j in range(channels):
         d = data[:, j]
-        d = d - np.mean(d)
+        #d = d - np.mean(d)
         d = detrend(d)
 
         # Apply Hann window to the signal
@@ -236,12 +260,13 @@ def plot_fft_with_zero_padding(data, sample_rate, frec_spek, Title="Bilde1", ful
 
         # Frequency bins
         freq = fftfreq(N_padded, 1/sample_rate)
+        #freq = fftfreq(len(windowed_data), 1/sample_rate)   #no zerro padding 
 
         # Adjusted to use the full spectrum for plotting and calculations
         full_freq = freq 
         full_magnitude = fft_magnitude
 
-        frequency_topp, magnitude_topp = find_peak_frequency(0.5, frec_spek, full_freq, full_magnitude) 
+        frequency_topp, magnitude_topp = find_peak_frequency(0.67, frec_spek, full_freq, full_magnitude) 
 
         # For å enklere plotte både negative og positive frekvenser 
         if full == 0:
@@ -249,17 +274,19 @@ def plot_fft_with_zero_padding(data, sample_rate, frec_spek, Title="Bilde1", ful
             full_magnitude = fft_magnitude [:N_padded//2]
 
         plt.plot(full_freq, 20*np.log10(full_magnitude) - np.max(20*np.log10(full_magnitude)), channels__colors[j],label=channels_names[j])
-        plt.scatter(frequency_topp, magnitude_topp, color="black", marker='o', s=100)  # `s` is the size of the marker
+        #plt.scatter(frequency_topp, magnitude_topp, color="black", marker='o', s=100)  # `s` is the size of the marker
 
 
         
     plt.xlabel('Frequency (Hz)', fontsize=22)
     plt.ylabel('Magnitude (dB)', fontsize=22)
     plt.xlim(0.5, frec_spek)
-    plt.ylim(np.min(20*np.log10(full_magnitude))-70,5)  # Adjust y-axis limits appropriately
+    plt.ylim(-65,5)  # Adjust y-axis limits appropriately
     plt.grid(True)
-    plt.title(Title)
+    #plt.title(Title)
     plt.legend(loc='best', fontsize='xx-large', frameon=True, shadow=True, borderpad=1)
+    #plt.savefig(f'{Title}.png', dpi=300, bbox_inches='tight')
+    plt.savefig(full_path, dpi=300, bbox_inches='tight')
     plt.show()
 
 
@@ -274,6 +301,9 @@ lille = ['data_num/lille2','data_num/lille3','data_num/lille4']
 palina =['data_num/palina_r1','data_num/palina_r2','data_num/palina1','data_num/palina2']
 random = ['data_num/test_lab','data_num/robust4','data_num/test_frekvens','data_num/test_out']
 
+reflektans =['data_num/reflektans12','data_num/reflektans13','data_num/reflektans14','data_num/reflektans22','data_num/reflektans23','data_num/reflektans24','data_num/reflektans25','data_num/reflektans26','data_num/reflektans27','data_num/reflektans28','data_num/reflektans31']
+
+
 frec_spek = 5
 
 
@@ -285,10 +315,10 @@ def test(file_list,plot_fft=0,plot_data_flag=0):
     - file_list: list of file names.
     """
 
-    channel_colors = ['Blå', 'Rød', 'Grønn']  # Example channel names/colors
+    channel_colors = ['Blå', 'Grønn', 'Rød']  # Example channel names/colors
     results = {'Blå': {'Peaks': [], 'SNR': [], 'Puls': []},
-               'Rød': {'Peaks': [], 'SNR': [], 'Puls': []},
-               'Grønn': {'Peaks': [], 'SNR': [], 'Puls': []}}
+               'Grønn': {'Peaks': [], 'SNR': [], 'Puls': []},
+               'Rød': {'Peaks': [], 'SNR': [], 'Puls': []}}
 
     for filename in file_list:
         # Assuming raspi_import returns sample_rate and data
@@ -296,7 +326,7 @@ def test(file_list,plot_fft=0,plot_data_flag=0):
         if plot_fft==1:   
             plot_fft_with_zero_padding(data_test, 30, frec_spek,f"Spektrum plot: {filename}")
         if plot_data_flag==1:
-            plot_data(data_test, filename=f"Raw data plot:{filename}",separate_channels=True)
+            plot_data(data_test, filename=f"Raw data plot:{filename}",separate_channels=False)
 
         # Assuming calculate_fft_with_zero_padding returns SNRs, peaks, magnitudes for all channels
         SNRs, peak_results, magnitudes = calculate_fft_with_zero_padding(data_test, sample_rate, frec_spek)
@@ -317,6 +347,6 @@ def test(file_list,plot_fft=0,plot_data_flag=0):
 # Example usage
         
 
-test(ok,1)
+test(reflektans)
 
 
