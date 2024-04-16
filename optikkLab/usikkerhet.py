@@ -14,7 +14,7 @@ plt.rcParams['lines.linewidth'] = 2.5
 
 
 # Det forskjellige normalpulsene 
-normal_grønn = np.array([1.104, 1.019, 0.977, 1.048, 1])
+normal_grønn = np.array([70,71,69,73,71,70,68,71,68,72,69])
 print(normal_grønn*60)
 
 normal_blå = np.array([1, 1.057, 1.019, 0.977, 1.048])
@@ -23,8 +23,9 @@ normal_blå = np.array([1, 1.057, 1.019, 0.977, 1.048])
 
 
 # Beregn standardavviket for disse vinklene
-standardavvik_grønn = np.std(normal_grønn*60)
-standardavvik_blå = np.std(normal_blå*60)
+standardavvik_grønn = np.std(normal_grønn)
+standardavvik_blå = np.mean(normal_grønn)
+#standardavvik_blå = np.std(normal_blå)
 #standardavvik_31 = np.std(vinkler_min_31)
 
 # Beregn variansen for disse vinklene

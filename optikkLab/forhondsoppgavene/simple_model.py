@@ -13,7 +13,7 @@ wavelength = np.array([red_wavelength, green_wavelength, blue_wavelength])
 def mua_blood_oxy(x): return np.interp(x, muabo[:, 0], muabo[:, 1])
 def mua_blood_deoxy(x): return np.interp(x, muabd[:, 0], muabd[:, 1])
 
-bvf = 1 # Blood volume fraction, average blood amount in tissue
+bvf = 0.1 # Blood volume fraction, average blood amount in tissue
 oxy = 0.8 # Blood oxygenation
 
 # Absorption coefficient ($\mu_a$ in lab text)
@@ -42,7 +42,7 @@ print(musr,"Musr" )
 print(mua, "Mua")
 
 def calculate_penetration_depth(mua, musr):
-    return 1 / np.sqrt(3 * (musr + mua) * mua)
+    return  np.sqrt(1/(3 * (musr + mua) * mua))
 
 
 # Function to calculate the constant C based on mu_a and mu_s'
@@ -59,6 +59,7 @@ def calculate_transmission(d, mua, musr):
     phi_0 = calculate_phi_0(mua, calculate_penetration_depth(mua, musr))
     phi_d = phi_0 * np.exp(-C * d)
     T = phi_d / phi_0
+    T = 2.71828**(-C*d)
     return T
 
 
@@ -68,14 +69,14 @@ def kontrast (d,bvf_h,bvf_l ):
     return K
 
 
-
+# Red, green and blue correspond to indexes 0, 1 and 2, respectively
 print ("Oppgave 1a) ")
 # Call the function with the calculated mua and musr values
 penetration_depth = calculate_penetration_depth(mua, musr)
 print(penetration_depth, "Penetration Depth")
 
 
-print ("Oppgave 1b) i meter ")
+print ("Oppgave 1b) i prosent ")
 # For demonstration, let's calculate the transmission at a depth of 1 mm for red, green, and blue wavelengths
 depth = 300e-6 # Depth in meters
 transmission_red = calculate_transmission(depth, mua[0], musr[0])

@@ -200,8 +200,8 @@ def calculate_fft_with_zero_padding(data, sample_rate, frec_spek):
         freq = fftfreq(N_padded, 1/sample_rate)[:N_padded//2]
 
         # find_peak_frequency returns the peak frequency and its magnitude
-        frequency_topp, magnitude_topp = find_peak_frequency(0.67, frec_spek, freq, fft_magnitude)        
-        signal_freq_range = (frequency_topp-0.25, frequency_topp+0.25)
+        frequency_topp, magnitude_topp = find_peak_frequency(0.67, 3, freq, fft_magnitude)        
+        signal_freq_range = (frequency_topp-0.5, frequency_topp+0.5)
         noise_freq_range = (frequency_topp+0.5, frequency_topp+5)
 
         SNRs[j] = calculate_SNR(freq, fft_magnitude, signal_freq_range, noise_freq_range)
@@ -244,7 +244,7 @@ def plot_fft_with_zero_padding(data, sample_rate, frec_spek, Title="Bilde1", ful
     channels__colors= ['b', 'g', 'r']
     for j in range(channels):
         d = data[:, j]
-        #d = d - np.mean(d)
+        d = d - np.mean(d)
         d = detrend(d)
 
         # Apply Hann window to the signal
@@ -301,11 +301,10 @@ lille = ['data_num/lille2','data_num/lille3','data_num/lille4']
 palina =['data_num/palina_r1','data_num/palina_r2','data_num/palina1','data_num/palina2']
 random = ['data_num/test_lab','data_num/robust4','data_num/test_frekvens','data_num/test_out']
 
-reflektans =['data_num/reflektans12','data_num/reflektans13','data_num/reflektans14','data_num/reflektans22','data_num/reflektans23','data_num/reflektans24','data_num/reflektans25','data_num/reflektans26','data_num/reflektans27','data_num/reflektans28','data_num/reflektans31']
-
+reflektans =['data_num/reflektans12','data_num/reflektans14','data_num/reflektans22','data_num/reflektans23','data_num/reflektans24','data_num/reflektans25','data_num/reflektans26','data_num/reflektans27','data_num/reflektans28','data_num/reflektans31']
+#,'data_num/reflektans13'
 
 frec_spek = 5
-
 
 def test(file_list,plot_fft=0,plot_data_flag=0):
     """
@@ -336,17 +335,33 @@ def test(file_list,plot_fft=0,plot_data_flag=0):
             results[color]['Peaks'].append(peak_results[i])
             results[color]['SNR'].append(SNRs[i])
             results[color]['Puls'].append(peak_results[i] * 60)  # Convert peak frequency to beats per minute
-
     # Print results in a more organized way
     for color in channel_colors:
+        snr_avg = np.mean(results[color]['SNR'])
+        snr_std = np.std(results[color]['SNR'])
+        pulse_avg = np.mean(results[color]['Puls'])
+        pulse_std = np.std(results[color]['Puls'])
         print(f"Kanal {color}:")
-        print(f"  Sterkeste frekvensen: {results[color]['Peaks']}")
-        print(f"  SNR: {results[color]['SNR']}")
+        #print(f"  Sterkeste frekvensen: {results[color]['Peaks']}")
+        print(f"  SNR: {results[color]['SNR']}\n")
+        print(f"  Gjennomsnittlig SNR: {snr_avg}, Standardavvik SNR: {snr_std}\n")
         print(f"  Puls: {results[color]['Puls']}\n")
+        print(f"  Gjennomsnittlig puls: {pulse_avg}, Standardavvik puls: {pulse_std}\n")
 
 # Example usage
         
 
-test(reflektans)
+
+robust =['data_num/robust/lars1','data_num/robust/lars2(90)','data_num/robust/lars3(100)','data_num/robust/lars4(100)', 'data_num/robust/lars5(96)']
+robust_kalt =['data_num/robust/larskalt_2_95','data_num/robust/larskalt_3_97','data_num/robust/larskalt_4_92','data_num/robust/larskalt_5_98','data_num/robust/larshvillekalt6_71','data_num/robust/larshvillekalt7_73']
+robust_løpe = [
+'data_num/robust/larsløpe2_155',
+'data_num/robust/larsløpe3_114',
+'data_num/robust/larsløpe4_137',
+'data_num/robust/larsløpe5_121',
+'data_num/robust/larsløpe6_117']
+
+
+test(robust_kalt,1)
 
 
