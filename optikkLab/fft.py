@@ -200,8 +200,8 @@ def calculate_fft_with_zero_padding(data, sample_rate, frec_spek):
         freq = fftfreq(N_padded, 1/sample_rate)[:N_padded//2]
 
         # find_peak_frequency returns the peak frequency and its magnitude
-        frequency_topp, magnitude_topp = find_peak_frequency(0.67, 3, freq, fft_magnitude)        
-        signal_freq_range = (frequency_topp-0.5, frequency_topp+0.5)
+        frequency_topp, magnitude_topp = find_peak_frequency(1, 3, freq, fft_magnitude)        
+        signal_freq_range = (frequency_topp-0.25, frequency_topp+0.25)
         noise_freq_range = (frequency_topp+0.5, frequency_topp+5)
 
         SNRs[j] = calculate_SNR(freq, fft_magnitude, signal_freq_range, noise_freq_range)
@@ -238,7 +238,7 @@ def plot_fft_with_zero_padding(data, sample_rate, frec_spek, Title="Bilde1", ful
 
 
 
-    plt.figure(figsize=(11, 8))
+    plt.figure(figsize=(22, 8))
     channels=data.shape[1]
     channels_names = ['Blå', 'Grønn', 'Rød']
     channels__colors= ['b', 'g', 'r']
@@ -304,7 +304,7 @@ random = ['data_num/test_lab','data_num/robust4','data_num/test_frekvens','data_
 reflektans =['data_num/reflektans12','data_num/reflektans14','data_num/reflektans22','data_num/reflektans23','data_num/reflektans24','data_num/reflektans25','data_num/reflektans26','data_num/reflektans27','data_num/reflektans28','data_num/reflektans31']
 #,'data_num/reflektans13'
 
-frec_spek = 5
+frec_spek = 7
 
 def test(file_list,plot_fft=0,plot_data_flag=0):
     """
@@ -352,8 +352,17 @@ def test(file_list,plot_fft=0,plot_data_flag=0):
         
 
 
-robust =['data_num/robust/lars1','data_num/robust/lars2(90)','data_num/robust/lars3(100)','data_num/robust/lars4(100)', 'data_num/robust/lars5(96)']
-robust_kalt =['data_num/robust/larskalt_2_95','data_num/robust/larskalt_3_97','data_num/robust/larskalt_4_92','data_num/robust/larskalt_5_98','data_num/robust/larshvillekalt6_71','data_num/robust/larshvillekalt7_73']
+robust =['data_num/robust/lars1',
+         'data_num/robust/lars2(90)',
+         'data_num/robust/lars3(100)',
+         'data_num/robust/lars4(100)',
+           'data_num/robust/lars5(96)']
+robust_kalt =['data_num/robust/larskalt_2_95',
+              'data_num/robust/larskalt_3_97',
+              'data_num/robust/larskalt_4_92',
+              'data_num/robust/larskalt_5_98',
+              'data_num/robust/larshvillekalt6_71',
+              'data_num/robust/larshvillekalt7_73']
 robust_løpe = [
 'data_num/robust/larsløpe2_155',
 'data_num/robust/larsløpe3_114',
@@ -362,6 +371,6 @@ robust_løpe = [
 'data_num/robust/larsløpe6_117']
 
 
-test(robust_kalt,1)
+test(robust_løpe,1)
 
 
